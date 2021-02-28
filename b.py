@@ -41,7 +41,7 @@ class BankAccout:
         self.__last_name = last_name
         self.__curr_amount_of_money = initial_deposit
         self.__history_of_transactions = []
-        self.__password_salt = __random_salt_generation(len(password))
+        self.__password_salt = self.__random_salt_generation(len(password))
         self.__password = self.__hash_and_salt_password(password)
         
     def __str__(self):
@@ -49,16 +49,16 @@ class BankAccout:
 
     def __hash_and_salt_password(self, password):
         hashed_password = 0
-        for index in (0, len(password)):
-            hashed_password += password[i] << i + self.__password_salt[i] << i
-        return hashed_password 
+        for i in range(0, len(password)):
+            hashed_password += (ord(password[i]) << i) + (ord(self.__password_salt[i]) << i)
+        return hashed_password
 
-    def __random_salt_generation(size, chars = string.ascii_uppercase + string.digits):
+    def __random_salt_generation(self, size, chars = string.ascii_uppercase + string.digits):
         return ''.join(random.choice(chars) for _ in range(size))
 
     def __save_transaction(self, is_deposit, amount):
         add = amount if is_deposit else -amount    
-        self.__history_of_transactions.append(Transaction(len(self.__history_of_transactions) + 1, is_deposit, amount, self.__curr_amount_of_money + add))\
+        self.__history_of_transactions.append(Transaction(len(self.__history_of_transactions) + 1, is_deposit, amount, self.__curr_amount_of_money + add))
 
     def check_password(self, password):
         curr_hashed_password = self.__hash_and_salt_password(password)
@@ -67,7 +67,7 @@ class BankAccout:
         return False
 
     def change_password(self, password):
-        self.__password_salt = __random_salt_generation(len(password))
+        self.__password_salt = self.__random_salt_generation(len(password))
         self.__password = self.__hash_and_salt_password(password)
 
     def withdraw(self, amount):
@@ -98,7 +98,6 @@ class BankAccout:
     def get_history_of_transactions(self, transactions):
         self.__history_of_transactions = transactions
 
-
     def get_first_name(self):
         return self.__first_name
 
@@ -110,7 +109,3 @@ class BankAccout:
 
     def get_history_of_transactions(self):
         return self.__history_of_transactions
-
-
-
-
